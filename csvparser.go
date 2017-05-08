@@ -9,6 +9,7 @@ package gtfsparser
 import (
 	"encoding/csv"
 	"io"
+	"strings"
 )
 
 type CsvParser struct {
@@ -63,4 +64,13 @@ func (p *CsvParser) ParseCsvLine() []string {
 
 func (p *CsvParser) ParseHeader() {
 	p.header = p.ParseCsvLine()
+	p.RemoveBOM()
+}
+
+func (p *CsvParser) RemoveBOM() {
+	newHeader := make([]string, len(p.header))
+	for i, header := range p.header {
+		newHeader[i] = (strings.TrimPrefix(header, "\uFEFF"))
+	}
+	p.header = newHeader
 }
